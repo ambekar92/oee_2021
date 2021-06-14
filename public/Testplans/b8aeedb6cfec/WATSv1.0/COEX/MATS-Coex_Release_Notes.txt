@@ -1,0 +1,23 @@
+MATS Coex Release Notes :
+=========================
+
+Test Input Xls Changes :
+-------------------------
+Changes :On top of MATS 8.6. 
+Author :Kiran Sonna.
+Modified Section : MasterBTCoexSanity.xls.
+
+Changes :
+
+a.A2DP SNK cases Master/Slave cases for MMH.
+b.Ref2 to be updated in OPP Test cases.
+c.In case of MMH and P2P LE HID Spatial cases added.
+d.STA BGN Sanity OPP Spatial Test cases, file size Modified 30MB.
+e.All BDR related test cases are modified to priority 3.
+
+Script Changes :
+----------------
+
+Change Part :
+Author :
+
