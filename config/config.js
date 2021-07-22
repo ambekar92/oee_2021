@@ -2,13 +2,13 @@ const { ALPN_ENABLED } = require("constants");
 
 var config = {
     app: {
-        port: '9000',
+        port: '9008',
         saltRounds: 10
     },
     mongodb: {
         host: 'localhost',
         port: '27017',
-        schema: 'nxp'
+        schema: 'Test001'
     },
     jwt: {
         sessionTimeout: 28800,

@@ -1,6 +1,6 @@
 var mongoDb = new(require('config/mongodb'));
 var ldap = require('ldapjs');
-var redisClient = require('config/redis.js');
+//var redisClient = require('config/redis.js');
 const fs = require('fs');
 
 var userImpl = function() {};
@@ -239,13 +239,13 @@ userImpl.prototype.insertUser = function(user) {
 userImpl.prototype.logout = function(user) {
     console.log("logout--", user);
     return new Promise((resolve, reject) => {
-        redisClient.del(`${user.nxfID}`, function(err, res) {
-            if (!err) {
-                resolve("Logged out", res);
-            } else {
-                reject("Unable to logout");
-            }
-        });
+        //redisClient.del(`${user.nxfID}`, function(err, res) {
+        // if (!err) {
+        //     resolve("Logged out", res);
+        // } else {
+        //     reject("Unable to logout");
+        // }
+        //});
 
     });
 };

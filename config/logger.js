@@ -1,3 +1,3 @@
-var logger = console;
+var log = console.log;
 
-module.exports = logger;
+module.exports = log;

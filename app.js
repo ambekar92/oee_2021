@@ -3,12 +3,11 @@ var path = require('path');
 var express = require('express');
 var body_parser = require('body-parser');
 var config = require('config/config');
-const logger = require('config/logger');
+const log = require('config/logger');
 var mongoDb = new(require('config/mongodb'));
 var routes = require('routes/apiRoutes');
 var swaggerUi = require('swagger-ui-express');
 var swaggerDocument = require('config/swagger.json');
-var mqttClient = new(require('config/mqtt'));
 var socket = require('config/socket');
 
 // connect to mongodb
@@ -33,22 +32,22 @@ app.use(function(req, res, next) {
     next();
 });
 
-//connect to mqttClient
-mqttClient.connect();
+// //connect to mqttClient
+// mqttClient.connect();
 
-//Listen to subscribed topics
-mqttClient.onMsgArrived();
+// //Listen to subscribed topics
+// mqttClient.onMsgArrived();
 
-//subscribe to mqtt
-mqttClient.subscribe(config.mqtt.resultTopic);
+// //subscribe to mqtt
+// mqttClient.subscribe(config.mqtt.resultTopic);
 
-mqttClient.subscribe(config.mqtt.statusTopic);
+// mqttClient.subscribe(config.mqtt.statusTopic);
 
-mqttClient.subscribe(config.mqtt.registerTopic);
+// mqttClient.subscribe(config.mqtt.registerTopic);
 
-mqttClient.subscribe(config.mqtt.errorTopic);
+// mqttClient.subscribe(config.mqtt.errorTopic);
 
-mqttClient.subscribe(config.mqtt.summaryTopic);
+// mqttClient.subscribe(config.mqtt.summaryTopic);
 
 // Initiliaze routes
 app.use('/', routes.router);
@@ -60,7 +59,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 var server = app.listen(config.app.port, function() {
     var host = server.address().address;
     var port = server.address().port;
-    logger.info(`Application listening at http://${host}:${port}`);
+    log(`Application listening at http://${host}:${port} \n------>`);
 });
 
 socketIOObj.connect(server);

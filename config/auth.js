@@ -1,9 +1,9 @@
 var jwt = require('jsonwebtoken');
-var redisClient = require('config/redis.js');
+//var redisClient = require('config/redis.js');
 const config = require('config/config');
 var userImpl = require('services/db/userImpl.js');
 var userImplObj = new userImpl();
-const logger = require('config/logger');
+const log = require('config/logger');
 
 var responseError = require('routes/errorHandler.js');
 
@@ -25,8 +25,8 @@ function generateToken(payload) {
     var token = jwt.sign(payload, config.jwt.secretKey, {
         expiresIn: config.jwt.tokenTimeout
     });
-    redisClient.set(payload.nxfID, token);
-    redisClient.expire(payload.nxfID, sessionTimeout);
+    //redisClient.set(payload.nxfID, token);
+    //redisClient.expire(payload.nxfID, sessionTimeout);
     return token;
 }
 
@@ -46,15 +46,15 @@ function authenticate(req, res, next) {
             jwt.verify(token, config.jwt.secretKey, function(verifyErr, payload) {
                 console.log("payload-------", payload);
                 if (!verifyErr) {
-                    redisClient.exists(payload.nxfID, function(sessionError, reply) {
-                        if (reply) {
-                            console.log("reply---", reply);
-                            req.user = payload;
-                            next();
-                        } else {
-                            authError(res);
-                        }
-                    });
+                    // redisClient.exists(payload.nxfID, function(sessionError, reply) {
+                    //  if (reply) {
+                    console.log("reply---", reply);
+                    req.user = payload;
+                    next();
+                    // } else {
+                    // authError(res);
+                    // }
+                    // });
                 } else {
                     authError(res);
                 }
@@ -110,7 +110,7 @@ async function traceUserActivity(req, res, action) {
         await userImplObj.insertActivity(userObj);
 
     } catch (err) {
-        logger.error("traceUserActivity : ", err);
+        log("traceUserActivity : ", err);
 
     }
 }
