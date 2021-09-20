@@ -72,12 +72,12 @@ app.use("/Auth", gAuth.router);
 //app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // Start web server
-//const PORT = process.env.PORT || 5000; // testing
-var server = app.listen(config.app.port, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+const PORT = process.env.PORT || 9008; // testing
+var server = app.listen(PORT, function () {
+  // var host = server.address().address;
+  // var port = server.address().port;
   log(
-    `\n<< Server Running in ${process.env.NODE_ENV} -> http://127.0.0.1:${port} >>`
+    `\n<< Server Running in ${process.env.NODE_ENV} -> http://127.0.0.1:${PORT} >>`
   );
 });
 
