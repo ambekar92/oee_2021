@@ -1,5 +1,5 @@
 var router = require("express").Router();
-let { ensureAuth, ensureGuest } = require("../middleware/auth");
+//let { ensureAuth, ensureGuest } = require("../middleware/auth");
 
 var user = require("routes/controller/user");
 var userObj = new user();
@@ -19,7 +19,6 @@ router.get("/home", function (req, res) {
   //ensureAuth,
   console.log("Check-->", req.user);
   let responseObject = { home: "Go to Home page router", data: req.user };
-
   //   res.render("home", {
   //     name: req.user.displayName,
   //   });
@@ -38,9 +37,5 @@ router.post("/api/login", userObj.login);
 router.post("/api/addUser", userObj.addUser);
 
 router.get("/api/getUsers", userObj.getUsers);
-
-router.post("/api/disableUser", userObj.disableUser);
-
-router.post("/api/assignRole", userObj.assignRole);
 
 router.post("/logout", userObj.logout);
