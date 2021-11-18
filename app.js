@@ -6,7 +6,7 @@ var path = require("path");
 var body_parser = require("body-parser");
 var config = require("config/config");
 
-var mongoDb = new (require("config/mongodb"))();
+var mongoDb = new(require("config/mongodb"))();
 var routes = require("routes/apiRoutes");
 var gAuth = require("routes/gAuth");
 
@@ -38,15 +38,15 @@ app.use(express.static(path.join(__dirname + "/swagger"))); // Configure directo
 // app.use(body_parser.json());    // Use HTTP request parser to get values from query and body
 // app.use(body_parser.urlencoded({ extended: true }));
 app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
 
 // Sessions
 app.use(
-  session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: false,
-  })
+    session({
+        secret: "keyboard cat",
+        resave: false,
+        saveUninitialized: false,
+    })
 );
 
 //Passport Middleware
@@ -54,14 +54,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Enable custom CORS
-app.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept, Authorization, enctype"
-  );
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  next();
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization, enctype"
+    );
+    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    next();
 });
 
 // Initiliaze routes
@@ -73,12 +73,12 @@ app.use("/Auth", gAuth.router);
 
 // Start web server
 const PORT = process.env.PORT || 9008; // testing
-var server = app.listen(PORT, function () {
-  // var host = server.address().address;
-  // var port = server.address().port;
-  log(
-    `\n<< Server Running in ${process.env.NODE_ENV} -> http://127.0.0.1:${PORT} >>`
-  );
+var server = app.listen(PORT, function() {
+    // var host = server.address().address;
+    // var port = server.address().port;
+    log(
+        `\n<< Server Running in ${process.env.NODE_ENV} -> http://127.0.0.1:${PORT} >>`
+    );
 });
 
 socketIOObj.connect(server);
