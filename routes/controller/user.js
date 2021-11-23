@@ -10,7 +10,7 @@ const _ = require("underscore");
 
 var bcryptHash = util.promisify(bcrypt.hash);
 
-var routes = function () {};
+var routes = function() {};
 
 module.exports = routes;
 
@@ -19,134 +19,134 @@ module.exports = routes;
 /**
  * This method is for login
  */
-routes.prototype.login = async function (req, res) {
-  let user;
-  var token;
-  var responseObject = {
-    status: true,
-    responseCode: 200,
-    data: {},
-    token: "",
-  };
-
-  if (req.body.user == "guest") {
-    user = {
-      password: "p@ssw0rd",
-      mail: "guest@nxp.com",
-      role: "Guest",
-      nxfID: "guest123",
+routes.prototype.login = async function(req, res) {
+    let user;
+    var token;
+    var responseObject = {
+        status: true,
+        responseCode: 200,
+        data: {},
+        token: "",
     };
 
-    token = auth.generateToken(user);
-    responseObject.message = "Login successful!";
-    responseObject.token = token;
-    responseObject.data = user;
-    //auth.traceUserActivity(req, responseObject, "Login");
-    res.json(responseObject);
-  } else {
-    var emailId = req.body.email;
-    var password = req.body.password;
+    if (req.body.user == "guest") {
+        user = {
+            password: "p@ssw0rd",
+            mail: "guest@nxp.com",
+            role: "Guest",
+            nxfID: "guest123",
+        };
 
-    user = {
-      password: password,
-      nxfID: emailId,
-    };
-
-    console.log("req", req.body);
-    try {
-      // hashing the password to provide security (so no one except the user knows it :)
-      // let passwordHash = await bcryptHash(password, saltRounds);
-      // checking the user
-      let newUser = await userImplObj.login(user);
-      console.log("new user-", newUser);
-      if (newUser) {
         token = auth.generateToken(user);
         responseObject.message = "Login successful!";
         responseObject.token = token;
-        responseObject.data = newUser;
+        responseObject.data = user;
         //auth.traceUserActivity(req, responseObject, "Login");
         res.json(responseObject);
-      }
-    } catch (err) {
-      logger.error("loginError : ", err);
-      responseError(res, responseObject, err);
-    }
-  }
-};
-
-routes.prototype.addUser = async function (req, res) {
-  //console.log("req.body >>", req.body);
-  let dataObj = req.body.userData;
-
-  var responseObject = {
-    status: true,
-    responseCode: 200,
-  };
-
-  try {
-    //console.log("dataObj.googleId >>", dataObj[0].googleId);
-    let query = { googleId: dataObj[0].googleId };
-    let users = await userImplObj.getUser(query);
-    console.log("User Found -->", users);
-
-    if (users !== null && users.googleId === dataObj[0].googleId) {
-      responseError(res, responseObject, "User already present");
     } else {
-      let newUser = await userImplObj.insertUser(dataObj[0]);
-      responseObject.message = "User added successfully!";
-      res.json(responseObject);
+        var emailId = req.body.email;
+        var password = req.body.password;
+
+        user = {
+            password: password,
+            nxfID: emailId,
+        };
+
+        console.log("req", req.body);
+        try {
+            // hashing the password to provide security (so no one except the user knows it :)
+            // let passwordHash = await bcryptHash(password, saltRounds);
+            // checking the user
+            let newUser = await userImplObj.login(user);
+            console.log("new user-", newUser);
+            if (newUser) {
+                token = auth.generateToken(user);
+                responseObject.message = "Login successful!";
+                responseObject.token = token;
+                responseObject.data = newUser;
+                //auth.traceUserActivity(req, responseObject, "Login");
+                res.json(responseObject);
+            }
+        } catch (err) {
+            logger.error("loginError : ", err);
+            responseError(res, responseObject, err);
+        }
     }
-  } catch (err) {
-    console.log("addUser : ", err);
-    responseError(res, responseObject, err);
-  }
 };
 
-routes.prototype.getUsers = async function (req, res) {
-  var responseObject = {
-    status: true,
-    responseCode: 200,
-    data: {},
-  };
+routes.prototype.addUser = async function(req, res) {
+    //console.log("req.body >>", req.body);
+    let dataObj = req.body.userData;
 
-  try {
-    let query = {};
-    let users = await userImplObj.getUsers(query);
-    //console.log(users);
-    responseObject.message = "Users list";
-    responseObject.elements = users.length;
-    responseObject.data = users;
-    res.json(responseObject);
-  } catch (err) {
-    console.log("getUsers : ", err);
-    responseError(res, responseObject, "Unable to get users");
-  }
-};
-
-routes.prototype.logout = async function (req, res) {
-  console.log("in logout", req.body);
-  var emailId = req.body.email;
-  var responseObject = {
-    status: true,
-    responseCode: 200,
-    data: {},
-  };
-
-  try {
-    let user = {
-      mail: emailId,
-      nxfID: req.body.nxfID,
+    var responseObject = {
+        status: true,
+        responseCode: 200,
     };
 
-    // checking the user
-    let newUser = await userImplObj.logout(user);
-    console.log("new user-", newUser);
+    try {
+        //console.log("dataObj.googleId >>", dataObj[0].googleId);
+        let query = { googleId: dataObj[0].googleId };
+        let users = await userImplObj.getUser(query);
+        console.log("User Found -->", users);
 
-    responseObject.message = "Logout successful!";
-    auth.traceUserActivity(req, responseObject, "Logout");
-    res.json(responseObject);
-  } catch (err) {
-    logger.error("loginError : ", err);
-    responseError(res, responseObject, "Unable to logout");
-  }
+        if (users !== null && users.googleId === dataObj[0].googleId) {
+            responseError(res, responseObject, "User already present");
+        } else {
+            let newUser = await userImplObj.insertUser(dataObj[0]);
+            responseObject.message = "User added successfully!";
+            res.json(responseObject);
+        }
+    } catch (err) {
+        console.log("addUser : ", err);
+        responseError(res, responseObject, err);
+    }
+};
+
+routes.prototype.getUsers = async function(req, res) {
+    var responseObject = {
+        status: true,
+        responseCode: 200,
+        data: [],
+    };
+
+    try {
+        let query = {};
+        let users = await userImplObj.getUsers(query);
+        //console.log(users);
+        responseObject.message = "Users list";
+        responseObject.elements = users.length;
+        responseObject.data = users;
+        res.json(responseObject);
+    } catch (err) {
+        console.log("getUsers : ", err);
+        responseError(res, responseObject, "Unable to get users");
+    }
+};
+
+routes.prototype.logout = async function(req, res) {
+    console.log("in logout", req.body);
+    var emailId = req.body.email;
+    var responseObject = {
+        status: true,
+        responseCode: 200,
+        data: {},
+    };
+
+    try {
+        let user = {
+            mail: emailId,
+            nxfID: req.body.nxfID,
+        };
+
+        // checking the user
+        let newUser = await userImplObj.logout(user);
+        console.log("new user-", newUser);
+
+        responseObject.message = "Logout successful!";
+        auth.traceUserActivity(req, responseObject, "Logout");
+        res.json(responseObject);
+    } catch (err) {
+        logger.error("loginError : ", err);
+        responseError(res, responseObject, "Unable to logout");
+    }
 };
