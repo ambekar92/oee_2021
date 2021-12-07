@@ -9,7 +9,7 @@ var responseError = require("routes/errorHandler.js");
 var responseObject = {
     status: true,
     responseCode: 200,
-    data: {},
+    data: [],
 };
 
 /*
@@ -31,27 +31,35 @@ function generateToken(payload) {
     The checks for valid JSON Web Token in Header for every HTTP request and also checks redis for active user session.
 */
 function authenticate(req, res, next) {
-    console.log(req.headers["authorization"]);
-    var token = req.headers["authorization"].split(" ")[1];
+    console.log("Token >>", req.headers["authorization"]);
 
-    if (!token) {
-        authError(res);
-    } else {
-        try {
-            jwt.verify(token, config.jwt.secretKey, function(verifyErr, payload) {
-                console.log("payload-------", payload);
+    if (typeof req.headers["authorization"] !== "undefined") {
+        var token = req.headers["authorization"].split(" ")[1];
 
-                if (!verifyErr) {
-                    //console.log("reply---", reply);
-                    req.user = payload;
-                    next();
-                } else {
-                    authError(res);
-                }
-            });
-        } catch (error) {
-            console.log(error);
+        if (!token) {
+            authError(res);
+        } else {
+            try {
+                jwt.verify(token, config.jwt.secretKey, function(verifyErr, payload) {
+                    console.log("payload-------", payload);
+
+                    if (!verifyErr) {
+                        req.user = payload;
+                        next();
+                    } else {
+                        authError(res);
+                    }
+                });
+            } catch (error) {
+                console.log(error);
+            }
         }
+    } else {
+        let obj = {
+            "responseCode": 401,
+            "info": "Token is required to execute the API"
+        }
+        res.json(obj);
     }
 }
 
@@ -108,7 +116,6 @@ async function traceUserActivity(req, res, action) {
 function authError(res) {
     responseObject.responseCode = 403;
     responseError(res, responseObject, "Session Timeout");
-    // res.status(401).send({ status: false, message: 'You do not have permission to perform this action - Session timeout ' });
 }
 
 var auth = {
