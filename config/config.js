@@ -19,8 +19,9 @@ var config = {
     },
     jwt: {
         sessionTimeout: 28800,
-        tokenTimeout: 28800,
+        tokenTimeout: 600,
         secretKey: "3rd24d92rd32jdjewofjewf8",
+        refreshTokenSecret: '1999sansi1992'
     },
     xlsConversion: {
         runSheetName: "RUN",

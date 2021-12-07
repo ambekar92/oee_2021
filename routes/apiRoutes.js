@@ -1,41 +1,43 @@
 var router = require("express").Router();
 //let { ensureAuth, ensureGuest } = require("../middleware/auth");
-
+var auth = require('../config/auth');
 var user = require("routes/controller/user");
 var userObj = new user();
 
+
 // export the routes to our application
 module.exports = {
-  router: router,
+    router: router,
 };
 
-// render angular application
-router.get("/", function (req, res) {
-  //ensureGuest,
-  res.render("login");
+// Render UI application
+router.get("/", function(req, res) {
+    //ensureGuest,
+    res.render("login");
 });
 
-router.get("/home", function (req, res) {
-  //ensureAuth,
-  console.log("Check-->", req.user);
-  let responseObject = { home: "Go to Home page router", data: req.user };
-  //   res.render("home", {
-  //     name: req.user.displayName,
-  //   });
-  res.json(responseObject);
+router.get("/home", function(req, res) {
+    let responseObject = { home: "Go to Home page router" };
+    //   res.render("home", {
+    //     name: req.user.displayName,
+    //   });
+    res.json(responseObject);
 });
 
 //logout user
-router.get("/logout", (req, res) => {
-  req.logOut();
-  res.redirect("/");
-});
+// router.get("/logout", (req, res) => {
+//     req.logOut();
+//     res.redirect("/");
+// });
 
 /* User APIs */
+//auth.authenticate,
+router.post("/api/addGoogleUser", userObj.addGoogleUser);
+
 router.post("/api/login", userObj.login);
 
-router.post("/api/addUser", userObj.addUser);
+router.post("/api/addNewUser", auth.authenticate, userObj.addNormalUser);
 
-router.get("/api/getUsers", userObj.getUsers);
+router.get("/api/getUsers", auth.authenticate, userObj.getUsers);
 
-router.post("/logout", userObj.logout);
+router.post("/api/logout", auth.authenticate, userObj.logout);
