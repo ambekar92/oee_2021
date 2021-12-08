@@ -105,8 +105,8 @@ routes.prototype.addGoogleUser = async function(req, res) {
 routes.prototype.addNormalUser = async function(req, res) {
     console.log("req.body >>", req.body);
     let email = req.body.email;
-    let password = req.body.password;
-
+    //let password = req.body.password;
+    let userData = req.body;
     var responseObject = {
         status: true,
         responseCode: 200,
@@ -118,14 +118,14 @@ routes.prototype.addNormalUser = async function(req, res) {
         let users = await userImplObj.getUsers(query);
         console.log("User Found -->", users);
 
-        if (users !== null && users[0].email === email) {
+        if (users.length > 0) {
             responseError(res, responseObject, "User already present");
         } else {
-            let obj = {
-                "email": email,
-                "password": password
-            }
-            let newUser = await userImplObj.insertUser(obj);
+            // let obj = {
+            //     "email": email,
+            //     "password": password
+            // }
+            let newUser = await userImplObj.insertUser(userData);
             responseObject.message = "User added successfully!";
             res.json(responseObject);
         }
@@ -164,7 +164,7 @@ routes.prototype.logout = async function(req, res) {
     var responseObject = {
         status: true,
         responseCode: 200,
-        data: {},
+        data: [],
     };
 
     try {

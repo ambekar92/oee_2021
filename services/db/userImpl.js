@@ -9,15 +9,14 @@ module.exports = userImpl;
 /***** User Impl *****/
 
 // Get user details
-userImpl.prototype.getUser = function(query) {
+userImpl.prototype.checkUser = function(query) {
     var User = mongoDb.getCollection("user");
-    //console.log("CHeck --> ", User);
     return new Promise((resolve, reject) => {
-        User.findOne(query, function(findOneUserErr, findOneUserResult) {
-            if (!findOneUserErr) {
-                resolve(findOneUserResult);
+        User.find(query).toArray(function(getTpErr, getTpResult) {
+            if (!getTpErr) {
+                resolve(getTpResult);
             } else {
-                reject(findOneUserErr);
+                reject(getTpErr);
             }
         });
     });
